@@ -9,6 +9,7 @@ interface MotionData {
 
 const THRESHOLD = 4.25;
 const SCORE_INCREMENT = 10; 
+const INTERVAL = 1000;
 
 const DeviceSensor: React.FC = () => {
   const [motionData, setMotionData] = useState<MotionData>({
@@ -82,11 +83,16 @@ const DeviceSensor: React.FC = () => {
   };
 
   useEffect(() => {
+    const intervalId = setInterval(() => {
+      requestPermissions();
+    }, INTERVAL);
+
     return () => {
+      clearInterval(intervalId); 
       window.removeEventListener('devicemotion', handleMotionEvent);
       window.removeEventListener('deviceorientation', handleOrientationEvent);
     };
-  }, []);
+  }, [prevAcceleration]);
 
   // 許可をリクエストするボタンのクリックイベント
   const handleButtonClick = () => {
