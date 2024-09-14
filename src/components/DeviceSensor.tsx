@@ -7,7 +7,7 @@ interface MotionData {
     間隔: number | null;
 }
 
-const THRESHOLD = 2; 
+const THRESHOLD = 20; 
 const SCORE_INCREMENT = 10; 
 
 const DeviceSensor: React.FC = () => {
@@ -104,7 +104,7 @@ const DeviceSensor: React.FC = () => {
         <p>X: {formatNumber(motionData.加速度.x)}</p>
         <p>Y: {formatNumber(motionData.加速度.y)}</p>
         <p>Z: {formatNumber(motionData.加速度.z)}</p>
-        <h3>スコア (Score): {score}</h3>
+
         <h3>重力を含む加速度 (Acceleration Including Gravity)</h3>
         <p>X: {formatNumber(motionData.重力を含む加速度.x)}</p>
         <p>Y: {formatNumber(motionData.重力を含む加速度.y)}</p>
@@ -117,6 +117,7 @@ const DeviceSensor: React.FC = () => {
 
         <h3>間隔 (Interval)</h3>
         <p>{motionData.間隔 !== null ? motionData.間隔.toFixed(2) : 'N/A'}</p>
+        <h3>スコア (Score): {score}</h3>
       </div>
     </div>
   );
