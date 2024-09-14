@@ -7,7 +7,7 @@ interface MotionData {
     間隔: number | null;
 }
 
-const THRESHOLD = 4;
+const THRESHOLD = 5;
 const SCORE_INCREMENT = 10; 
 
 const DeviceSensor: React.FC = () => {
@@ -97,8 +97,8 @@ const DeviceSensor: React.FC = () => {
 
   return (
     <div>
-      <h2>Device Motion Data</h2>
-      <button onClick={handleButtonClick}>Request Permission</button>
+      <h2>デバイスデータ取得</h2>
+      <button onClick={handleButtonClick}>リクエストを許可</button>
     <div>
         <h3>加速度 (Acceleration)</h3>
         <p>X: {formatNumber(motionData.加速度.x)}</p>
