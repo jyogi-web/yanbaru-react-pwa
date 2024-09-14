@@ -82,11 +82,31 @@ const DeviceSensor: React.FC = () => {
     requestPermissions();
   };
 
+  const formatNumber = (num: number | null) => (num !== null ? num.toFixed(2) : 'N/A');
+
   return (
     <div>
       <h2>Device Motion Data</h2>
       <button onClick={handleButtonClick}>Request Permission</button>
-      <pre>{JSON.stringify(motionData, null, 2)}</pre>
+<       div>
+        <h3>加速度 (Acceleration)</h3>
+        <p>X: {formatNumber(motionData.加速度.x)}</p>
+        <p>Y: {formatNumber(motionData.加速度.y)}</p>
+        <p>Z: {formatNumber(motionData.加速度.z)}</p>
+
+        <h3>重力を含む加速度 (Acceleration Including Gravity)</h3>
+        <p>X: {formatNumber(motionData.重力を含む加速度.x)}</p>
+        <p>Y: {formatNumber(motionData.重力を含む加速度.y)}</p>
+        <p>Z: {formatNumber(motionData.重力を含む加速度.z)}</p>
+
+        <h3>回転速度 (Rotation Rate)</h3>
+        <p>Alpha: {formatNumber(motionData.回転速度.alpha)}</p>
+        <p>Beta: {formatNumber(motionData.回転速度.beta)}</p>
+        <p>Gamma: {formatNumber(motionData.回転速度.gamma)}</p>
+
+        <h3>間隔 (Interval)</h3>
+        <p>{motionData.間隔 !== null ? motionData.間隔.toFixed(2) : 'N/A'}</p>
+      </div>
     </div>
   );
 };
