@@ -18,11 +18,27 @@ const Accelerometer: React.FC = () => {
       });
     };
 
-    if (window.DeviceMotionEvent) {
-      window.addEventListener('devicemotion', handleMotionEvent);
-    } else {
-      console.log("DeviceMotionEvent is not supported on this device.");
-    }
+    const requestPermission = async () => {
+      if (typeof DeviceMotionEvent !== 'undefined' && 'requestPermission' in DeviceMotionEvent) {
+        try {
+          const permissionState = await (DeviceMotionEvent as unknown as { requestPermission: () => Promise<string> }).requestPermission();
+          if (permissionState === 'granted') {
+            window.addEventListener('devicemotion', handleMotionEvent);
+          } else {
+            console.log('Permission denied for DeviceMotionEvent.');
+          }
+        } catch (error) {
+          console.error('Error requesting permission for DeviceMotionEvent:', error);
+        }
+      } else if (window.DeviceMotionEvent) {
+        // 許可が不要なブラウザ（多くの Android ブラウザなど）での処理
+        window.addEventListener('devicemotion', handleMotionEvent);
+      } else {
+        console.log("DeviceMotionEvent is not supported on this device.");
+      }
+    };
+
+    requestPermission();
 
     return () => {
       window.removeEventListener('devicemotion', handleMotionEvent);
