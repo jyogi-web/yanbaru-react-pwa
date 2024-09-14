@@ -1,45 +1,35 @@
 import React, { useEffect, useState } from 'react';
 
-interface Acceleration {
+// 加速度データのインターフェースを定義
+interface AccelerationData {
   x: number | null;
   y: number | null;
   z: number | null;
 }
 
 const Accelerometer: React.FC = () => {
-  const [acceleration, setAcceleration] = useState<Acceleration>({ x: null, y: null, z: null });
+  // 加速度データの状態を管理
+  const [acceleration, setAcceleration] = useState<AccelerationData>({ x: null, y: null, z: null });
 
   useEffect(() => {
+    // DeviceMotionEventを処理する関数
     const handleMotionEvent = (event: DeviceMotionEvent) => {
+      // 加速度データを更新
       setAcceleration({
-        x: event.acceleration?.x ?? 0,
-        y: event.acceleration?.y ?? 0,
+        x: event.acceleration?.x ?? 0, 
+        y: event.acceleration?.y ?? 0, 
         z: event.acceleration?.z ?? 0,
       });
     };
 
-    const requestPermission = async () => {
-      if (typeof DeviceMotionEvent !== 'undefined' && 'requestPermission' in DeviceMotionEvent) {
-        try {
-          const permissionState = await (DeviceMotionEvent as unknown as { requestPermission: () => Promise<string> }).requestPermission();
-          if (permissionState === 'granted') {
-            window.addEventListener('devicemotion', handleMotionEvent);
-          } else {
-            console.log('Permission denied for DeviceMotionEvent.');
-          }
-        } catch (error) {
-          console.error('Error requesting permission for DeviceMotionEvent:', error);
-        }
-      } else if (window.DeviceMotionEvent) {
-        // 許可が不要なブラウザ（多くの Android ブラウザなど）での処理
-        window.addEventListener('devicemotion', handleMotionEvent);
-      } else {
-        console.log("DeviceMotionEvent is not supported on this device.");
-      }
-    };
+    // DeviceMotionEventのサポートをチェックしてイベントリスナーを追加
+    if (window.DeviceMotionEvent) {
+      window.addEventListener('devicemotion', handleMotionEvent);
+    } else {
+      console.log("DeviceMotionEvent is not supported on this device.");
+    }
 
-    requestPermission();
-
+    // クリーンアップ関数でイベントリスナーを削除
     return () => {
       window.removeEventListener('devicemotion', handleMotionEvent);
     };
