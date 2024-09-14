@@ -9,12 +9,15 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png'],
-      injectRegister: 'auto', 
+      injectRegister: 'auto', // 追加
       manifest: {
         name: 'PWA Sample Apps',
         short_name: 'PWAApps', 
         description: 'PWAサンプルアプリ',
         theme_color: '#ffffff',
+        display: 'fullscreen',
+        scope: '/',
+        start_url: '/',
         icons: [
           {
             src: 'pwa-192x192.png',
