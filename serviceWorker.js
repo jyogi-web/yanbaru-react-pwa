@@ -30,7 +30,7 @@ self.addEventListener('activate', (event) => {
       Promise.all(
         casheNames.map((casheName) => {
           if (!casheWhitelist.includes(casheName)) {
-            return cashes.delete(casheName);
+            return casheWhitelist.delete(casheName);
           }
         })
       )

@@ -1,49 +1,61 @@
 import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react-swc'
-import {  VitePWA } from 'vite-plugin-pwa' 
-
+import react from '@vitejs/plugin-react'
+import { VitePWA } from 'vite-plugin-pwa'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'apple-touch-icon.png'],
-      injectRegister: 'auto', // 追加
+      includeAssets: [
+        'offline.html',
+        'favicon.svg',
+        'favicon.ico',
+        'robots.txt',
+        'apple-touch-icon.png',
+      ],
       manifest: {
-        name: 'PWA Sample Apps',
-        short_name: 'PWAApps', 
-        description: 'PWAサンプルアプリ',
         theme_color: '#ffffff',
+        background_color: '#4a90e2',
         display: 'fullscreen',
         scope: '/',
         start_url: '/',
+        short_name: 'Just Dance',
+        description: 'Just Dance',
+        name: 'Just Dance',
         icons: [
           {
-            src: 'pwa-192x192.png',
+            src: '/apple-touch-icon.png',
             sizes: '192x192',
-            type: 'image/png'
+            type: 'image/png',
           },
           {
-            src: 'pwa-512x512.png',
-            sizes: '512x512',
-            type: 'image/png'
+            src: '/icon-256x256.png',
+            sizes: '256x256',
+            type: 'image/png',
           },
           {
-            src: 'pwa-512x512.png',
+            src: '/icon-384x384.png',
+            sizes: '384x384',
+            type: 'image/png',
+          },
+          {
+            src: '/icon-512x512.png',
             sizes: '512x512',
             type: 'image/png',
-            purpose: 'any'
           },
           {
-            src: 'pwa-512x512.png',
+            src: '/icon-512x512.png',
             sizes: '512x512',
             type: 'image/png',
-            purpose: 'maskable'
-          }
-        ]
-      }
-    })
-    // ★★★ここまで！！★★★
+            purpose: 'any maskable',
+          },
+        ],
+      },
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,png}'],
+        globIgnores: ['**/sw.js', '**/manifest.webmanifest'],
+        navigateFallback: '/index.html',
+      },
+    }),
   ],
 })
