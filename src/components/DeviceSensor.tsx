@@ -1,38 +1,38 @@
 import React, { useEffect, useState } from 'react';
 
 interface MotionData {
-  acceleration: { x: number | null; y: number | null; z: number | null };
-  accelerationIncludingGravity: { x: number | null; y: number | null; z: number | null };
-  rotationRate: { alpha: number | null; beta: number | null; gamma: number | null };
-  interval: number | null;
+    加速度: { x: number | null; y: number | null; z: number | null };
+    重力を含む加速度: { x: number | null; y: number | null; z: number | null };
+    回転速度: { alpha: number | null; beta: number | null; gamma: number | null };
+    間隔: number | null;
 }
 
 const DeviceSensor: React.FC = () => {
   const [motionData, setMotionData] = useState<MotionData>({
-    acceleration: { x: null, y: null, z: null },
-    accelerationIncludingGravity: { x: null, y: null, z: null },
-    rotationRate: { alpha: null, beta: null, gamma: null },
-    interval: null,
+    加速度: { x: null, y: null, z: null },
+    重力を含む加速度:{ x: null, y: null, z: null },
+    回転速度: { alpha: null, beta: null, gamma: null },
+    間隔:  null,
   });
 
   const handleMotionEvent = (event: DeviceMotionEvent) => {
     setMotionData({
-      acceleration: {
+        加速度:  {
         x: event.acceleration?.x ?? 0,
         y: event.acceleration?.y ?? 0,
         z: event.acceleration?.z ?? 0,
       },
-      accelerationIncludingGravity: {
+      重力を含む加速度:{
         x: event.accelerationIncludingGravity?.x ?? 0,
         y: event.accelerationIncludingGravity?.y ?? 0,
         z: event.accelerationIncludingGravity?.z ?? 0,
       },
-      rotationRate: {
+      回転速度:{
         alpha: event.rotationRate?.alpha ?? 0,
         beta: event.rotationRate?.beta ?? 0,
         gamma: event.rotationRate?.gamma ?? 0,
       },
-      interval: event.interval ?? 0,
+      間隔:  event.interval ?? 0,
     });
   };
 
