@@ -43,19 +43,36 @@ const DeviceSensor: React.FC = () => {
 
     console.log(`deltaX: ${deltaX}, deltaY: ${deltaY}, deltaZ: ${deltaZ}`);
 
-    // スコアの加算条件
     if (deltaX > THRESHOLD || deltaY > THRESHOLD || deltaZ > THRESHOLD) {
       setScore((prevScore) => {
         const newScore = prevScore + SCORE_INCREMENT;
         if (newScore >= MAX_SCORE) {
           stopMeasurement();
         }
+        // スコアをサーバーに送信
+        submitScoreToServer(newScore);
         return newScore;
       });
     }
-
     setPrevAcceleration(newAcceleration);
   };
+    // スコアをFlaskサーバーに送信する関数
+    const submitScoreToServer = (score: number) => {
+    fetch('http://127.0.0.1:5000/submit-score', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ score: score }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('Score submitted successfully:', data);
+      })
+      .catch((error) => {
+        console.error('Error submitting score:', error);
+      });
+    };
 
   const handleOrientationEvent = (event: DeviceOrientationEvent) => {
     console.log('Orientation data:', event);
