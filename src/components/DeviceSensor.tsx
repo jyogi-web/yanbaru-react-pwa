@@ -1,24 +1,22 @@
 import React, { useEffect, useState } from 'react';
 
 interface MotionData {
-    加速度: { x: number | null; y: number | null; z: number | null };
-    重力を含む加速度: { x: number | null; y: number | null; z: number | null };
-    回転速度: { alpha: number | null; beta: number | null; gamma: number | null };
-    間隔: number | null;
+  加速度: { x: number | null; y: number | null; z: number | null };
+  重力を含む加速度: { x: number | null; y: number | null; z: number | null };
+  回転速度: { alpha: number | null; beta: number | null; gamma: number | null };
+  間隔: number | null;
 }
-// 加点のしきい値
-const THRESHOLD = 2; 
-// 加点の増加量
-const SCORE_INCREMENT = 10; 
-// 最大スコア
-const MAX_SCORE = 100; 
+
+const THRESHOLD = 2; // 加点のしきい値
+const SCORE_INCREMENT = 10; // 加点の増加量
+const MAX_SCORE = 100; // 最大スコア
 
 const DeviceSensor: React.FC = () => {
   const [motionData, setMotionData] = useState<MotionData>({
     加速度: { x: null, y: null, z: null },
-    重力を含む加速度:{ x: null, y: null, z: null },
+    重力を含む加速度: { x: null, y: null, z: null },
     回転速度: { alpha: null, beta: null, gamma: null },
-    間隔:  null,
+    間隔: null,
   });
 
   const [prevAcceleration, setPrevAcceleration] = useState<{ x: number; y: number; z: number } | null>(null);
@@ -56,7 +54,6 @@ const DeviceSensor: React.FC = () => {
       }
     }
 
-    // 現在の加速度を前回の加速度として保存
     setPrevAcceleration(newAcceleration);
   };
 
@@ -91,8 +88,7 @@ const DeviceSensor: React.FC = () => {
       console.error('Error requesting sensor permissions:', error);
     }
   };
-  
-  //計測を停止する
+
   const stopMeasurement = () => {
     setIsMeasuring(false);
     window.removeEventListener('devicemotion', handleMotionEvent);
@@ -101,16 +97,19 @@ const DeviceSensor: React.FC = () => {
   };
 
   useEffect(() => {
+    if (isMeasuring) {
+      requestPermissions();
+    } else {
+      stopMeasurement();
+    }
+
     return () => {
       stopMeasurement();
     };
-  }, []);
-  // 許可をリクエストするボタンのクリックイベント
+  }, [isMeasuring]);
+
   const handleButtonClick = () => {
-    if (!isMeasuring) {
-      setIsMeasuring(true);
-      requestPermissions();
-    }
+    setIsMeasuring(true);
   };
 
   const formatNumber = (num: number | null) => (num !== null ? num.toFixed(2) : 'N/A');
