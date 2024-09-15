@@ -63,22 +63,22 @@ const DeviceSensor: React.FC = () => {
     }
     setPrevAcceleration(newAcceleration);
   };
-    const submitScoreToServer = async (score: number) => {
-      try {
-        const response = await fetch('https://justeisa-h7drgugva3g6fqap.japaneast-01.azurewebsites.net/submit-score', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ score: score }),
+    const submitScoreToServer = (score: number) => {
+      fetch('https://justeisa-h7drgugva3g6fqap.japaneast-01.azurewebsites.net/submit-score', {
+        method: 'POST',  // 正しいHTTPメソッドで送信する
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ score: score }), 
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log('Score submitted successfully:', data);
+        })
+        .catch((error) => {
+          console.error('Error submitting score:', error);
         });
-    
-        const data = await response.json();
-        console.log('Score submitted successfully:', data);
-      } catch (error) {
-        console.error('Error submitting score:', error);
-      }
-    };  
+  };
 
   const handleOrientationEvent = (event: DeviceOrientationEvent) => {
     console.log('Orientation data:', event);
