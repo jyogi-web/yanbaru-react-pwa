@@ -65,7 +65,7 @@ const DeviceSensor: React.FC = () => {
   };
     const submitScoreToServer = (score: number) => {
       fetch('https://justeisa-h7drgugva3g6fqap.japaneast-01.azurewebsites.net/submit-score', {
-        method: 'POST',  // 正しいHTTPメソッドで送信する
+        method: 'GET',  // 正しいHTTPメソッドで送信する
         headers: {
           'Content-Type': 'application/json',
         },
