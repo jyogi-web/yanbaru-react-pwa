@@ -58,7 +58,7 @@ const DeviceSensor: React.FC = () => {
   };
     // スコアをFlaskサーバーに送信する関数
     const submitScoreToServer = (score: number) => {
-    fetch('http://127.0.0.1:5000/submit-score', {
+    fetch('https://justeisa-h7drgugva3g6fqap.japaneast-01.azurewebsites.net/submit-score', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
