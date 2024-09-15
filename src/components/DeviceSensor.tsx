@@ -22,8 +22,11 @@ const DeviceSensor: React.FC = () => {
 
   const [prevAcceleration, setPrevAcceleration] = useState<{ x: number; y: number; z: number } | null>(null);
   const [score, setScore] = useState<number>(0);
+  const [isMeasuring, setIsMeasuring] = useState<boolean>(true);
 
   const handleMotionEvent = (event: DeviceMotionEvent) => {
+    if (!isMeasuring) return; 
+
     const newAcceleration = {
       x: event.acceleration?.x ?? 0,
       y: event.acceleration?.y ?? 0,
@@ -89,7 +92,10 @@ const DeviceSensor: React.FC = () => {
       console.error('Error requesting sensor permissions:', error);
     }
   };
+  
+  //計測を停止する
   const stopMeasurement = () => {
+    setIsMeasuring(false);
     window.removeEventListener('devicemotion', handleMotionEvent);
     window.removeEventListener('deviceorientation', handleOrientationEvent);
     console.log('Measurement stopped.');
@@ -102,6 +108,7 @@ const DeviceSensor: React.FC = () => {
   }, []);
   // 許可をリクエストするボタンのクリックイベント
   const handleButtonClick = () => {
+    setIsMeasuring(true);
     requestPermissions();
   };
 
