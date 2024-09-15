@@ -9,7 +9,7 @@ interface MotionData {
 
 const THRESHOLD = 2; // 加点のしきい値
 const SCORE_INCREMENT = 10; // 加点の増加量
-const MAX_SCORE = 100; // 最大スコア
+// const MAX_SCORE = 100; // 最大スコア
 
 const DeviceSensor: React.FC = () => {
   const [motionData, setMotionData] = useState<MotionData>({
@@ -44,11 +44,18 @@ const DeviceSensor: React.FC = () => {
     console.log(`deltaX: ${deltaX}, deltaY: ${deltaY}, deltaZ: ${deltaZ}`);
 
     if (deltaX > THRESHOLD || deltaY > THRESHOLD || deltaZ > THRESHOLD) {
+      // setScore((prevScore) => {
+      //   const newScore = prevScore + SCORE_INCREMENT;
+      //   if (newScore >= MAX_SCORE) {
+      //     stopMeasurement();
+      //   }
+      //   // スコアをサーバーに送信
+      //   submitScoreToServer(newScore);
+      //   return newScore;
+      // });
+      // スコアの更新部分
       setScore((prevScore) => {
         const newScore = prevScore + SCORE_INCREMENT;
-        if (newScore >= MAX_SCORE) {
-          stopMeasurement();
-        }
         // スコアをサーバーに送信
         submitScoreToServer(newScore);
         return newScore;
@@ -56,23 +63,22 @@ const DeviceSensor: React.FC = () => {
     }
     setPrevAcceleration(newAcceleration);
   };
-    // スコアをFlaskサーバーに送信する関数
-    const submitScoreToServer = (score: number) => {
-    fetch('https://justeisa-h7drgugva3g6fqap.japaneast-01.azurewebsites.net/submit-score', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ score: score }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
+    const submitScoreToServer = async (score: number) => {
+      try {
+        const response = await fetch('https://justeisa-h7drgugva3g6fqap.japaneast-01.azurewebsites.net/submit-score', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ score: score }),
+        });
+    
+        const data = await response.json();
         console.log('Score submitted successfully:', data);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error('Error submitting score:', error);
-      });
-    };
+      }
+    };  
 
   const handleOrientationEvent = (event: DeviceOrientationEvent) => {
     console.log('Orientation data:', event);
