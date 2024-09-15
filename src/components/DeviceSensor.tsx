@@ -7,7 +7,7 @@ interface MotionData {
     間隔: number | null;
 }
 
-const THRESHOLD = 4.27;
+const THRESHOLD = 4.25;
 const SCORE_INCREMENT = 10; 
 
 const DeviceSensor: React.FC = () => {
