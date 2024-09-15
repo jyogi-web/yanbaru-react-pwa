@@ -7,9 +7,8 @@ interface MotionData {
     間隔: number | null;
 }
 
-const THRESHOLD = 4.25;
+const THRESHOLD = 4.27;
 const SCORE_INCREMENT = 10; 
-const INTERVAL = 1000;
 
 const DeviceSensor: React.FC = () => {
   const [motionData, setMotionData] = useState<MotionData>({
@@ -81,19 +80,13 @@ const DeviceSensor: React.FC = () => {
       console.error('Error requesting sensor permissions:', error);
     }
   };
-
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      requestPermissions();
-    }, INTERVAL);
-
     return () => {
-      clearInterval(intervalId); 
+ 
       window.removeEventListener('devicemotion', handleMotionEvent);
       window.removeEventListener('deviceorientation', handleOrientationEvent);
     };
-  }, [prevAcceleration]);
-
+  }, []);
   // 許可をリクエストするボタンのクリックイベント
   const handleButtonClick = () => {
     requestPermissions();
