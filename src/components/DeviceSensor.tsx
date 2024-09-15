@@ -41,7 +41,14 @@ const DeviceSensor: React.FC = () => {
 
       // 変化量がしきい値を超えた場合にスコアを加算
       if (deltaX > THRESHOLD || deltaY > THRESHOLD || deltaZ > THRESHOLD) {
-        setScore((prevScore) => prevScore + SCORE_INCREMENT);
+        setScore((prevScore) => {
+          const newScore = prevScore + SCORE_INCREMENT;
+          if (newScore >= 100) {
+            // スコアが100点以上になったら計測を停止
+            stopMeasurement();
+          }
+          return newScore;
+        });
       }
     }
 
@@ -80,11 +87,15 @@ const DeviceSensor: React.FC = () => {
       console.error('Error requesting sensor permissions:', error);
     }
   };
+  const stopMeasurement = () => {
+    window.removeEventListener('devicemotion', handleMotionEvent);
+    window.removeEventListener('deviceorientation', handleOrientationEvent);
+    console.log('Measurement stopped.');
+  };
+
   useEffect(() => {
     return () => {
- 
-      window.removeEventListener('devicemotion', handleMotionEvent);
-      window.removeEventListener('deviceorientation', handleOrientationEvent);
+      stopMeasurement();
     };
   }, []);
   // 許可をリクエストするボタンのクリックイベント
