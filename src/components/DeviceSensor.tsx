@@ -19,7 +19,7 @@ const DeviceSensor: React.FC = () => {
     間隔: null,
   });
 
-  const [prevAcceleration, setPrevAcceleration] = useState<{ x: number; y: number; z: number } | null>(null);
+  const [prevAcceleration, setPrevAcceleration] = useState<{ x: number; y: number; z: number }>({ x: 0, y: 0, z: 0 });
   const [score, setScore] = useState<number>(0);
   const [isMeasuring, setIsMeasuring] = useState<boolean>(false);
 
@@ -37,21 +37,21 @@ const DeviceSensor: React.FC = () => {
       加速度: newAcceleration,
     }));
 
-    if (prevAcceleration) {
-      const deltaX = Math.abs(newAcceleration.x - prevAcceleration.x);
-      const deltaY = Math.abs(newAcceleration.y - prevAcceleration.y);
-      const deltaZ = Math.abs(newAcceleration.z - prevAcceleration.z);
+    const deltaX = Math.abs(newAcceleration.x - prevAcceleration.x);
+    const deltaY = Math.abs(newAcceleration.y - prevAcceleration.y);
+    const deltaZ = Math.abs(newAcceleration.z - prevAcceleration.z);
 
-      // スコアの加算条件
-      if (deltaX > THRESHOLD || deltaY > THRESHOLD || deltaZ > THRESHOLD) {
-        setScore((prevScore) => {
-          const newScore = prevScore + SCORE_INCREMENT;
-          if (newScore >= MAX_SCORE) {
-            stopMeasurement();
-          }
-          return newScore;
-        });
-      }
+    console.log(`deltaX: ${deltaX}, deltaY: ${deltaY}, deltaZ: ${deltaZ}`);
+
+    // スコアの加算条件
+    if (deltaX > THRESHOLD || deltaY > THRESHOLD || deltaZ > THRESHOLD) {
+      setScore((prevScore) => {
+        const newScore = prevScore + SCORE_INCREMENT;
+        if (newScore >= MAX_SCORE) {
+          stopMeasurement();
+        }
+        return newScore;
+      });
     }
 
     setPrevAcceleration(newAcceleration);
@@ -109,7 +109,9 @@ const DeviceSensor: React.FC = () => {
   }, [isMeasuring]);
 
   const handleButtonClick = () => {
-    setIsMeasuring(true);
+    if (!isMeasuring) {
+      setIsMeasuring(true);
+    }
   };
 
   const formatNumber = (num: number | null) => (num !== null ? num.toFixed(2) : 'N/A');
