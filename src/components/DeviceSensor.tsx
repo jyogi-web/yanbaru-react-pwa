@@ -25,61 +25,55 @@ const DeviceSensor: React.FC = () => {
 
   const handleMotionEvent = (event: DeviceMotionEvent) => {
     if (!isMeasuring) return;
-
+  
     const newAcceleration = {
       x: event.acceleration?.x ?? 0,
       y: event.acceleration?.y ?? 0,
       z: event.acceleration?.z ?? 0,
     };
-
+  
     setMotionData((prevData) => ({
       ...prevData,
       加速度: newAcceleration,
     }));
-
+  
     const deltaX = Math.abs(newAcceleration.x - prevAcceleration.x);
     const deltaY = Math.abs(newAcceleration.y - prevAcceleration.y);
     const deltaZ = Math.abs(newAcceleration.z - prevAcceleration.z);
-
+  
     console.log(`deltaX: ${deltaX}, deltaY: ${deltaY}, deltaZ: ${deltaZ}`);
-
+  
     if (deltaX > THRESHOLD || deltaY > THRESHOLD || deltaZ > THRESHOLD) {
-      // setScore((prevScore) => {
-      //   const newScore = prevScore + SCORE_INCREMENT;
-      //   if (newScore >= MAX_SCORE) {
-      //     stopMeasurement();
-      //   }
-      //   // スコアをサーバーに送信
-      //   submitScoreToServer(newScore);
-      //   return newScore;
-      // });
-      // スコアの更新部分
       setScore((prevScore) => {
         const newScore = prevScore + SCORE_INCREMENT;
-        // スコアをサーバーに送信
-        submitScoreToServer(newScore);
+  
+        // 増加量をサーバーに送信
+        submitScoreIncrementToServer(SCORE_INCREMENT);
+  
         return newScore;
       });
     }
     setPrevAcceleration(newAcceleration);
   };
-    const submitScoreToServer = (score: number) => {
-      fetch('https://justeisa-h7drgugva3g6fqap.japaneast-01.azurewebsites.net/submit-score', {
-        method: 'POST', 
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ score: score }), 
+  
+  // スコアの増加量をサーバーに送信する関数
+  const submitScoreIncrementToServer = (increment: number) => {
+    fetch('https://justeisa-h7drgugva3g6fqap.japaneast-01.azurewebsites.net/submit-score', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ increment: increment }), // 増加量を送信
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('Score increment submitted successfully:', data);
       })
-        .then((response) => response.json())
-        .then((data) => {
-          console.log('Score submitted successfully:', data);
-        })
-        .catch((error) => {
-          console.error('Error submitting score:', error);
-        });
+      .catch((error) => {
+        console.error('Error submitting score increment:', error);
+      });
   };
-
+  
   const handleOrientationEvent = (event: DeviceOrientationEvent) => {
     console.log('Orientation data:', event);
   };
