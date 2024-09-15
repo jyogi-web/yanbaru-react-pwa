@@ -6,11 +6,12 @@ interface MotionData {
     回転速度: { alpha: number | null; beta: number | null; gamma: number | null };
     間隔: number | null;
 }
-
-// const THRESHOLD = 4.22;
-
-const THRESHOLD = 2;
+// 加点のしきい値
+const THRESHOLD = 2; 
+// 加点の増加量
 const SCORE_INCREMENT = 10; 
+// 最大スコア
+const MAX_SCORE = 100; 
 
 const DeviceSensor: React.FC = () => {
   const [motionData, setMotionData] = useState<MotionData>({
@@ -22,10 +23,10 @@ const DeviceSensor: React.FC = () => {
 
   const [prevAcceleration, setPrevAcceleration] = useState<{ x: number; y: number; z: number } | null>(null);
   const [score, setScore] = useState<number>(0);
-  const [isMeasuring, setIsMeasuring] = useState<boolean>(true);
+  const [isMeasuring, setIsMeasuring] = useState<boolean>(false);
 
   const handleMotionEvent = (event: DeviceMotionEvent) => {
-    if (!isMeasuring) return; 
+    if (!isMeasuring) return;
 
     const newAcceleration = {
       x: event.acceleration?.x ?? 0,
@@ -38,18 +39,16 @@ const DeviceSensor: React.FC = () => {
       加速度: newAcceleration,
     }));
 
-    // 加速度の変化量を計算
     if (prevAcceleration) {
       const deltaX = Math.abs(newAcceleration.x - prevAcceleration.x);
       const deltaY = Math.abs(newAcceleration.y - prevAcceleration.y);
       const deltaZ = Math.abs(newAcceleration.z - prevAcceleration.z);
 
-      // 変化量がしきい値を超えた場合にスコアを加算
+      // スコアの加算条件
       if (deltaX > THRESHOLD || deltaY > THRESHOLD || deltaZ > THRESHOLD) {
         setScore((prevScore) => {
           const newScore = prevScore + SCORE_INCREMENT;
-          if (newScore >= 100) {
-            // スコアが100点以上になったら計測を停止
+          if (newScore >= MAX_SCORE) {
             stopMeasurement();
           }
           return newScore;
@@ -108,8 +107,10 @@ const DeviceSensor: React.FC = () => {
   }, []);
   // 許可をリクエストするボタンのクリックイベント
   const handleButtonClick = () => {
-    setIsMeasuring(true);
-    requestPermissions();
+    if (!isMeasuring) {
+      setIsMeasuring(true);
+      requestPermissions();
+    }
   };
 
   const formatNumber = (num: number | null) => (num !== null ? num.toFixed(2) : 'N/A');
@@ -117,25 +118,12 @@ const DeviceSensor: React.FC = () => {
   return (
     <div>
       <h2>デバイスデータ取得</h2>
-      <button onClick={handleButtonClick}>リクエストを許可</button>
-    <div>
+      <button onClick={handleButtonClick}>{isMeasuring ? '計測中...' : 'リクエストを許可'}</button>
+      <div>
         <h3>加速度 (Acceleration)</h3>
         <p>X: {formatNumber(motionData.加速度.x)}</p>
         <p>Y: {formatNumber(motionData.加速度.y)}</p>
         <p>Z: {formatNumber(motionData.加速度.z)}</p>
-
-        {/* <h3>重力を含む加速度 (Acceleration Including Gravity)</h3>
-        <p>X: {formatNumber(motionData.重力を含む加速度.x)}</p>
-        <p>Y: {formatNumber(motionData.重力を含む加速度.y)}</p>
-        <p>Z: {formatNumber(motionData.重力を含む加速度.z)}</p>
-
-        <h3>回転速度 (Rotation Rate)</h3>
-        <p>Alpha: {formatNumber(motionData.回転速度.alpha)}</p>
-        <p>Beta: {formatNumber(motionData.回転速度.beta)}</p>
-        <p>Gamma: {formatNumber(motionData.回転速度.gamma)}</p>
-
-        <h3>間隔 (Interval)</h3>
-        <p>{motionData.間隔 !== null ? motionData.間隔.toFixed(2) : 'N/A'}</p> */}
         <h3>スコア (Score): {score}</h3>
       </div>
     </div>
